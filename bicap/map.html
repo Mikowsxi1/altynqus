@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание события</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        </style>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f9;
+            overflow: hidden;
+        }
+        header {
+            background-color: #3f3f3f;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+        }
+        #formContainer {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #formContainer h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #3f3f3f;
+        }
+        #formContainer form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        #formContainer form label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        #formContainer form input, #formContainer form textarea, #formContainer form select {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        #formContainer form textarea {
+            resize: none;
+            height: 100px;
+        }
+        #formContainer form button {
+            background-color: #3f3f3f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #formContainer form button:hover {
+            background-color: #151515;
+        }
+        #map {
+            flex: 1;
+            margin-left: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Создание события</h1>
+        <nav>
+            <a href="final.html">Главная</a>
+            <a href="map.html">Мои события</a>
+            <a href="map2.html">Профиль</a>
+        </nav>
+    </header>
+    <main>
+        <div id="formContainer">
+            <h2>Добавить новое событие</h2>
+            <form id="eventForm">
+                <label for="title">Название события</label>
+                <input type="text" id="title" name="title" required>
+
+                <label for="description">Описание</label>
+                <textarea id="description" name="description" required></textarea>
+
+                <label for="date">Дата и время</label>
+                <input type="datetime-local" id="date" name="date" required>
+
+                <label for="category">Категория</label>
+                <select id="category" name="category">
+                    <option value="спорт">Спорт</option>
+                    <option value="музыка">Музыка</option>
+                    <option value="образование">Образование</option>
+                </select>
+
+                <label for="image">Загрузить фотографию</label>
+                <input type="file" id="image" name="image" accept="image/*">
+
+                <button type="submit">Создать событие</button>
+            </form>
+        </div>
+        <div id="map"></div>
+    </main>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([51.169392, 71.449074], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let selectedLocation = null;
+
+        map.on('click', function (e) {
+            selectedLocation = e.latlng;
+            L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup('Выбрано местоположение').openPopup();
+        });
+
+        const form = document.getElementById('eventForm');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const date = document.getElementById('date').value;
+            const category = document.getElementById('category').value;
+            const image = document.getElementById('image').files[0];
+
+            if (!selectedLocation) {
+                alert('Выберите местоположение на карте');
+                return;
+            }
+
+            console.log({
+                title,
+                description,
+                date,
+                category,
+                location: selectedLocation,
+                image
+            });
+
+            alert('Событие создано успешно!');
+        });
+    </script>
+</body>
+</html>
